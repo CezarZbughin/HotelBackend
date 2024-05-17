@@ -13,9 +13,4 @@ public class HelloController {
         return ResponseEntity.ok(new WebMessage("Hello World"));
     }
 
-    @PostMapping("/hello")
-    public ResponseEntity<?> hellopost(@RequestBody WebMessage webMessage){
-        return ResponseEntity.ok(new WebMessage("Hello World post"));
-    }
-
 }
