@@ -4,6 +4,8 @@ import com.cezar.HotelBackend.model.EndUser;
 import com.cezar.HotelBackend.model.Hotel;
 import com.cezar.HotelBackend.model.Room;
 import com.cezar.HotelBackend.repository.*;
+import com.cezar.HotelBackend.service.EndUserService;
+import com.cezar.HotelBackend.service.exception.UsernameAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +17,11 @@ import java.util.ArrayList;
 @Configuration
 public class MockDataCommandLineRunner implements CommandLineRunner {
     @Autowired
-    EndUserRepository endUserRepository;
+    EndUserService endUserService;
     @Autowired
     HotelRepository hotelRepository;
-
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Start Mocking Data.");
@@ -30,11 +33,11 @@ public class MockDataCommandLineRunner implements CommandLineRunner {
     }
 
     private void createUsers() {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();;
-        EndUser user = new EndUser();
-        user.setUsername("cezar");
-        user.setPassword(passwordEncoder.encode("root"));
-        endUserRepository.save(user);
+        try {
+            endUserService.createFromRawPassword("cezar", "root");
+        } catch (UsernameAlreadyExistsException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void createRamadaHotel() {
