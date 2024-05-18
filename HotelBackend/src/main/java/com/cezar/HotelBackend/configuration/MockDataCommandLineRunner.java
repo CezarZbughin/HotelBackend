@@ -44,6 +44,7 @@ public class MockDataCommandLineRunner implements CommandLineRunner {
     private void createUsers() {
         try {
             endUserService.createFromRawPassword("cezar", "root");
+            endUserService.createFromRawPassword("user", "root");
         } catch (UsernameAlreadyExistsException e) {
             throw new RuntimeException(e);
         }
