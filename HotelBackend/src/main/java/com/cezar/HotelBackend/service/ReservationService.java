@@ -13,8 +13,10 @@ import com.cezar.HotelBackend.service.exception.UserNotFoundException;
 import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -33,6 +35,21 @@ public class ReservationService {
     private RoomRepository roomRepository;
     @Autowired
     private EndUserService endUserService;
+
+    public List<Reservation> getAll() {
+        return reservationRepository.findAll();
+    }
+
+    public List<Reservation> getByUser(EndUser user) {
+        return reservationRepository.findAll()
+                .stream()
+                .filter(reservation -> reservation.getUser().getId().equals(user.getId()))
+                .toList();
+    }
+
+    public Optional<Reservation> getById(long id) {
+        return reservationRepository.findById(id);
+    }
 
     public Reservation createReservation(EndUser user, List<Room> rooms,  LocalDate startDate, LocalDate endDate)
             throws ReservationException {
@@ -82,6 +99,13 @@ public class ReservationService {
                 .toList();
         reservationHasRoomRepository.deleteAll(toDelete);
         reservationRepository.delete(reservation);
+    }
+
+    public void cancelReservationAs(EndUser user, Reservation reservation) throws ReservationException {
+        if(!reservation.getUser().getId().equals(user.getId())){
+            throw new ReservationException("The given user does not own the reservation");
+        }
+        cancelReservation(reservation);
     }
 
 
