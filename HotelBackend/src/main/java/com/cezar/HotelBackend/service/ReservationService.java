@@ -16,10 +16,12 @@ import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
@@ -65,6 +67,21 @@ public class ReservationService {
             rooms.add(room);
         }
         return createReservation(user, rooms, startDate, endDate);
+    }
+
+    public void cancelReservation(Reservation reservation) throws ReservationException {
+        if(LocalDate.now().isAfter(reservation.getStartDate())){
+            throw new ReservationException("The Reservation already started");
+        }
+        if(LocalDate.now().isEqual(reservation.getStartDate()) && LocalDateTime.now().getHour() > 11) {
+            throw new ReservationException("Can not cancel the reservation less than two hour before it starts");
+        }
+        List<ReservationHasRoom> toDelete = reservationHasRoomRepository.findAll()
+                .stream()
+                .filter(reservationHasRoom -> reservationHasRoom.getReservation().getId().equals(reservation.getId()))
+                .toList();
+        reservationHasRoomRepository.deleteAll(toDelete);
+        reservationRepository.delete(reservation);
     }
 
 
