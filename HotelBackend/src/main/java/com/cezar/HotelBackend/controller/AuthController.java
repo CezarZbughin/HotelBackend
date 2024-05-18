@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api/v1/auth")
+@CrossOrigin("*")
 public class AuthController {
 
     @Autowired

@@ -24,7 +24,7 @@ public class ReviewService {
     public List<Review> getByHotel(Hotel hotel){
         return reviewRepository.findAll()
                 .stream()
-                .filter(review -> review.getId().equals(hotel.getId()))
+                .filter(review -> review.getHotel().getId().equals(hotel.getId()))
                 .toList();
     }
 

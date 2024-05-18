@@ -14,6 +14,6 @@ import java.util.List;
 @Setter @Getter
 public class CreateReservationRequest {
     private List<Long> roomIds;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
 }

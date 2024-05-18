@@ -17,6 +17,7 @@ import java.security.Principal;
 
 @Controller
 @RequestMapping("api/v1/review")
+@CrossOrigin("*")
 public class ReviewController {
     @Autowired
     ReviewService reviewService;

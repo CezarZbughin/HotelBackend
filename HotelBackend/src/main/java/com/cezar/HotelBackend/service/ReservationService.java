@@ -63,7 +63,7 @@ public class ReservationService {
         reservation.setEndDate(endDate);
 
         for(Room room : rooms) {
-            if(! room.getHotel().getId().equals(rooms.get(0).getId())){
+            if(! room.getHotel().getId().equals(rooms.get(0).getHotel().getId())){
                 throw new ReservationException("All rooms must be in the same hotel");
             }
             ReservationHasRoom reservationHasRoom = new ReservationHasRoom();

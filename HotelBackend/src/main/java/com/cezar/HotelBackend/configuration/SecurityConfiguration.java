@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -44,10 +45,20 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req->req
                         .requestMatchers("api/v1/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "api/v1/hotel").permitAll()
-                        .requestMatchers(HttpMethod.GET, "api/v1/review").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/v1/hotel/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/v1/review/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .cors(cors -> {
+                    cors.configurationSource(request -> {
+                        CorsConfiguration corsConfiguration = new CorsConfiguration();
+                        corsConfiguration.addAllowedOrigin("http://localhost:4200");
+                        corsConfiguration.addAllowedHeader("*");
+                        corsConfiguration.addAllowedMethod("*");
+                        corsConfiguration.setAllowCredentials(true);
+                        return corsConfiguration;
+                    });
+                })
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(withDefaults());
         return http.build();

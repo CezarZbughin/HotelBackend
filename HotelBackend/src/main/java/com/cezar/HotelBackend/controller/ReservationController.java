@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Controller
 @RequestMapping("/api/v1/reservation")
+@CrossOrigin("*")
 public class ReservationController {
     @Autowired
     private ReservationService reservationService;
@@ -49,12 +52,13 @@ public class ReservationController {
     public ResponseEntity<?> createReservation(Principal principal, @RequestBody CreateReservationRequest createReservationRequest) {
         String username = principal.getName();
         EndUser user = endUserService.getByUsername(username).orElseThrow(()->new UsernameNotFoundException(username));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         try {
             Reservation reservation = reservationService.createReservation(
                     user.getId(),
                     createReservationRequest.getRoomIds(),
-                    createReservationRequest.getStartDate(),
-                    createReservationRequest.getEndDate()
+                    LocalDate.parse(createReservationRequest.getStartDate(), formatter),
+                    LocalDate.parse(createReservationRequest.getEndDate(), formatter)
             );
             return ResponseEntity.ok(reservation);
         } catch (ReservationException e) {
