@@ -26,7 +26,7 @@ public class HotelService {
         private Hotel hotel;
         private double distance;
     };
-    List<Hotel> getAll(){
+    public List<Hotel> getAll(){
         return hotelRepository.findAll();
     }
 
@@ -37,7 +37,7 @@ public class HotelService {
      * @param radius The max distance
      * @return This returns a list of hotels that are within the given radius from the given center point
      */
-    List<HotelAndDistance> getInRange(double lat, double lng, double radius) {
+    public List<HotelAndDistance> getInRange(double lat, double lng, double radius) {
         List<Hotel> hotels = getAll();
         List<HotelAndDistance> result = new ArrayList<>();
         for(Hotel hotel : hotels) {
