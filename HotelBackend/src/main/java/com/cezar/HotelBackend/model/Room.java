@@ -1,7 +1,9 @@
 package com.cezar.HotelBackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +19,9 @@ import lombok.Setter;
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "room_number")
         })
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Room extends IdentityModel<Long> {
     @ManyToOne
     @JoinColumn(name = "hotel_id")

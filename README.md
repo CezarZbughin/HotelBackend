@@ -7,6 +7,6 @@ TODO:
 [X] T-03: Mock Data
 [X] T-04: Security Setup
 [] T-05: Hotel Endpoint
-    [] T-05-01 Geolocation Service
+    [X] T-05-01 Geolocation Service
 [] T-06: Make Reservation
 [] T-07: Leave Review
