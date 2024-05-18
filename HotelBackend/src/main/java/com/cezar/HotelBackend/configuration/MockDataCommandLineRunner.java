@@ -2,16 +2,21 @@ package com.cezar.HotelBackend.configuration;
 
 import com.cezar.HotelBackend.model.EndUser;
 import com.cezar.HotelBackend.model.Hotel;
+import com.cezar.HotelBackend.model.Reservation;
 import com.cezar.HotelBackend.model.Room;
 import com.cezar.HotelBackend.repository.*;
 import com.cezar.HotelBackend.service.EndUserService;
+import com.cezar.HotelBackend.service.ReservationService;
+import com.cezar.HotelBackend.service.exception.ReservationException;
 import com.cezar.HotelBackend.service.exception.UsernameAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Configuration
@@ -22,6 +27,9 @@ public class MockDataCommandLineRunner implements CommandLineRunner {
     HotelRepository hotelRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    ReservationService reservationService;
+
     @Override
     public void run(String... args) throws Exception {
         System.out.println("Start Mocking Data.");
@@ -29,6 +37,7 @@ public class MockDataCommandLineRunner implements CommandLineRunner {
         createRamadaHotel();
         createGrandHotelItalia();
         createHamptonByHilton();
+        createReservation();
         System.out.println("Finish Mocking Data.");
     }
 
@@ -130,6 +139,14 @@ public class MockDataCommandLineRunner implements CommandLineRunner {
         hotelRepository.save(hamptonByHilton);
     }
 
-
+    private void createReservation() throws ReservationException {
+        EndUser user = endUserService.getByUsername("cezar").orElseThrow(RuntimeException::new);
+        Hotel hotel = hotelRepository.findById(1L).orElseThrow(RuntimeException::new);
+        ArrayList<Room> rooms = new ArrayList<>();
+        rooms.add(hotel.getRooms().get(0));
+        rooms.add(hotel.getRooms().get(2));
+        Reservation reservation =
+                reservationService.createReservation(user, rooms, LocalDate.now().plusDays(2), LocalDate.now().plusDays(5));
+    }
 }
 
