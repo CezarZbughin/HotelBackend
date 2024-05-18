@@ -44,6 +44,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req->req
                         .requestMatchers("api/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/v1/hotel").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/v1/review").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
